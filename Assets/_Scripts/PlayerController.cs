@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -32,7 +32,20 @@ public class PlayerController : MonoBehaviour
     #region Controller
     void movement()
     {
-        if ((Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown(KeyCode.Mouse0)) && !_GUIscript.isPaused)
+        bool spacePressed = Input.GetKeyDown(KeyCode.Space);
+        bool mousePressed = Input.GetMouseButtonDown(0);
+        bool touchBegan = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+
+        bool pointerOverUI = false;
+        if (EventSystem.current != null)
+        {
+            if (touchBegan)
+                pointerOverUI = EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId);
+            else if (mousePressed)
+                pointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        }
+
+        if ((spacePressed || (mousePressed && !pointerOverUI) || (touchBegan && !pointerOverUI)) && !_GUIscript.isPaused)
         {
             AudioManager.Instance.PlaySFX("Jump");
             rb.gravityScale = 0;

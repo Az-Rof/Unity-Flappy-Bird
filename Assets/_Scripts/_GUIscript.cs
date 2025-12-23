@@ -21,6 +21,7 @@ public class _GUIscript : MonoBehaviour
 
     void Start()
     {
+        GameOver = false;
         // timerText = gameObject.GetComponent<TextMeshPro>().gameObject;
         gameOverPanel.SetActive(false);
         score = 0;
@@ -88,7 +89,7 @@ public class _GUIscript : MonoBehaviour
     }
     public void resumeGame()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && isPaused)
+        if (isPaused && !GameOver || (Input.GetKey(KeyCode.Escape) && !isPaused && !GameOver))
         {
             isPaused = false;
             Time.timeScale = 1;
@@ -97,11 +98,11 @@ public class _GUIscript : MonoBehaviour
     }
     public void pauseGame()
     {
-        if (Input.GetKey(KeyCode.Escape) && !isPaused)
+        if (!isPaused && !GameOver || (Input.GetKey(KeyCode.Escape) && !isPaused && !GameOver))
         {
             isPaused = true;
             Time.timeScale = 0;
-            pausePanel.SetActive(true);            
+            pausePanel.SetActive(true);
         }
     }
 }
